@@ -1,6 +1,7 @@
 from nltk import ngrams
 from nltk.corpus import stopwords, brown
 from nltk.stem import SnowballStemmer, WordNetLemmatizer
+from nltk.tokenize import sent_tokenize
 from collections import Counter, defaultdict
 import re
 import os
@@ -15,16 +16,14 @@ class PoemGrammer(object):
 
         self.n_grams = self.all_ngrams(poems_folder)
 
-    def corpus_grams(self):
-        return self.corpus_grammer().keys()
-
     def viable_grams(self):
         return self.filter_ngrams().keys()
 
     def prepare_poem(self, f):
         poem = open(f, 'r').read()
         poem = poem.decode('utf-8', errors='replace')
-        sentences = re.split(r'[.?]', poem)
+        poem = re.sub('\n', ' ', poem)
+        sentences = sent_tokenize(poem)
         return sentences
 
     def all_ngrams(self, filepath):
@@ -41,17 +40,13 @@ class PoemGrammer(object):
 
         return singlets
 
-    def corpus_grammer(self):
-        ngrams_counter = Counter()
-        for sentence in self.corpus.sents():
-            for i in range(3, 11):
-                sentence = ' '.join(sentence)
-                sentence = re.sub(r'[^\w\s\']', '', sentence)
-                sentence = re.sub(r'\d', '', sentence)
-                sentence = sentence.lower()
-                grams = ngrams(sentence.split(), i)
-                ngrams_counter.update(list(grams))
-        return ngrams_counter
+    def corpus_grammer(self, corpus_output_file):
+        with open(corpus_output_file, 'a') as f:
+            for sentence in self.corpus.sents():
+                for i in range(3, 11):
+                    grams = ngrams(sentence, i)
+                    for gram in grams:
+                        f.write(' '.join(gram) + '\n')
 
     def extract_from_text(self, sentences):
         ngrams_counter = Counter()
@@ -70,6 +65,5 @@ class PoemGrammer(object):
 
 if __name__ == '__main__':
     crush = PoemGrammer('poems/')
-    with open('brown_grams.txt', 'w') as f:
-        for n_gram in crush.corpus_grams:
-            f.write(' '.join(n_gram)+ '\n')
+    crush.corpus_grammer('brown_ngrams.txt')
+
