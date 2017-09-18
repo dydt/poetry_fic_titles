@@ -7,15 +7,19 @@ import os
 
 class PoemGrammer(object):
 
-    def __init__(self, poems_folder, threshold):
+    def __init__(self, poems_folder):
         self.stemmer = SnowballStemmer("english")
         self.lemmatizer = WordNetLemmatizer()
         self.stopwords = set(stopwords.words('english'))
         self.corpus = brown
 
         self.n_grams = self.all_ngrams(poems_folder)
-        self.corpus_grams = self.corpus_grammer()
-        self.viable_grams = self.filter_ngrams()
+
+    def corpus_grams(self):
+        return self.corpus_grammer().keys()
+
+    def viable_grams(self):
+        return self.filter_ngrams().keys()
 
     def prepare_poem(self, f):
         poem = open(f, 'r').read()
@@ -65,7 +69,7 @@ class PoemGrammer(object):
 
 
 if __name__ == '__main__':
-    crush = PoemGrammer('poems/', 2)
-    with open('viable_grams.txt', 'w') as f:
-        for n_gram in crush.viable_grams:
+    crush = PoemGrammer('poems/')
+    with open('brown_grams.txt', 'w') as f:
+        for n_gram in crush.corpus_grams:
             f.write(' '.join(n_gram)+ '\n')
