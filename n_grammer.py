@@ -43,8 +43,12 @@ class PoemGrammer(object):
     def corpus_grammer(self, corpus_output_file):
         with open(corpus_output_file, 'a') as f:
             for sentence in self.corpus.sents():
+                sentence = ' '.join(sentence)
+                sentence = re.sub(r'[^\w\s\']', '', sentence)
+                sentence = re.sub(r'\d', '', sentence)
+                sentence = sentence.lower()
                 for i in range(3, 11):
-                    grams = ngrams(sentence, i)
+                    grams = ngrams(sentence.split(), i)
                     for gram in grams:
                         f.write(' '.join(gram) + '\n')
 
