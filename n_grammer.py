@@ -1,3 +1,4 @@
+import marisa_trie
 from nltk import ngrams
 from nltk.corpus import stopwords, brown
 from nltk.stem import SnowballStemmer, WordNetLemmatizer
@@ -35,8 +36,8 @@ class PoemGrammer(object):
         
         # Filter out n_grams that appear more than once
         # and ones with a stopword as last word
-        singlets = set([k for k, v in all_poem_ngrams.items()
-                        if v == 1 and k[-1] not in self.stopwords])
+        singlets = [' '.join(k) for k, v in all_poem_ngrams.items()
+                        if v == 1 and k[-1] not in self.stopwords]
 
         return singlets
 
@@ -63,11 +64,21 @@ class PoemGrammer(object):
                 ngrams_counter.update(grams)
         return ngrams_counter
 
+    def create_corpus_trie(self):
+        corpus_bigrams = [x.strip('\n') for x in open('brown_ngrams.txt', 'r').readlines()]
+        trie = marisa_trie.Trie(corpus_bigrams)
+        return trie
+
     def filter_ngrams(self):
-        return set(filter(lambda x: x not in self.corpus_grams, self.n_grams))
+        trie = self.create_corpus_trie()
+        print self.n_grams[:10]
+        viable = filter(lambda x: x not in trie, self.n_grams)
+        with open('viable_grams.txt', 'w') as f:
+            f.write('\n'.join(viable))
 
 
 if __name__ == '__main__':
     crush = PoemGrammer('poems/')
-    crush.corpus_grammer('brown_ngrams.txt')
+    crush.filter_ngrams()
+
 
