@@ -41,10 +41,10 @@ class PoemGrammer(object):
         return singlets
 
     def corpus_grammer(self, corpus_output_file):
-        with open(corpus_output_file, 'a') as f:
+        with open(corpus_output_file, 'w') as f:
             for sentence in self.corpus.sents():
                 sentence = ' '.join(sentence)
-                sentence = re.sub(r'[^\w\s\']', '', sentence)
+                sentence = re.sub(r'[^\w\s\'\"]', '', sentence)
                 sentence = re.sub(r'\d', '', sentence)
                 sentence = sentence.lower()
                 for i in range(3, 11):
