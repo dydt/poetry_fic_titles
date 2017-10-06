@@ -65,8 +65,10 @@ class PoemGrammer(object):
         return ngrams_counter
 
     def create_corpus_trie(self):
-        corpus_bigrams = [x.strip('\n') for x in open('brown_ngrams.txt', 'r').readlines()]
-        trie = marisa_trie.Trie(corpus_bigrams)
+        corpus_read = open('corpus_ngrams.txt', 'r').read()
+        processed = corpus_read.decode('utf-8', errors='replace').split('\n')
+        corpus_grams = [x.strip('\n') for x in processed]
+        trie = marisa_trie.Trie(corpus_grams)
         return trie
 
     def filter_ngrams(self):
@@ -80,5 +82,3 @@ class PoemGrammer(object):
 if __name__ == '__main__':
     crush = PoemGrammer('poems/')
     crush.filter_ngrams()
-
-
