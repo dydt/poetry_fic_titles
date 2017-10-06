@@ -7,7 +7,7 @@ import time
 def search_fics(string):
     # TODO: Add info to user-agent
     resp = requests.get('http://archiveofourown.org/works/search',
-                        params = {'work_search[title]': string})
+                        params = {'work_search[title]': "\"" + string + "\""})
     return resp.text
 
 def parse_results(html):
