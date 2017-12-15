@@ -40,4 +40,4 @@ if __name__ == '__main__':
             writer.writerow({'title': title,
                          'num_results': num_found,
                          'fandoms': str(fandoms)})
-            time.sleep(10)
+            time.sleep(5)
